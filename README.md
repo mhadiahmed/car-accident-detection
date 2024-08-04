@@ -1,4 +1,3 @@
-Sure, let’s dive into more detailed steps for training a custom YOLO model using Ultralytics, including preparing your dataset, configuring your training, and evaluating the model. I’ll break it down further:
 
 ### 1. **Dataset Preparation**
 
@@ -139,4 +138,34 @@ Sure, let’s dive into more detailed steps for training a custom YOLO model usi
 3. **Community Support:**
    - Engage with the YOLO community or forums if you encounter specific issues.
 
-Feel free to ask if you need more detailed steps or run into specific issues!
+how to run this project on your local:
+
+make sure you have python installed the latest version 3.10 if not download it from here python.org
+make sure to make a virtual environment using this command 
+
+```
+  python -m venv venv
+```
+
+active the virtual env on your terminal or cmd using the following command
+
+```
+# for windows
+venv\Scripts\activate
+
+# for linux & mac
+source venv/bin/activate
+```
+
+then install the requirements:
+
+```
+pip install -r requirements.txt
+```
+
+you are good to go run one of the script's by this command
+
+
+```
+python accidentv2.py
+```
