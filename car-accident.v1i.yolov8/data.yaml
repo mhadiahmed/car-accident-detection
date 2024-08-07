@@ -1,0 +1,13 @@
+train: /Users/mahdiahmed/Dev/car-accident-detection/car-accident.v1i.yolov8/train/images
+val: /Users/mahdiahmed/Dev/car-accident-detection/car-accident.v1i.yolov8/valid/images
+test: /Users/mahdiahmed/Dev/car-accident-detection/car-accident.v1i.yolov8/test/images
+
+nc: 4
+names: ['car-minor-accident', 'car-moderate-accident', 'car-serious-accident', 'fire']
+
+roboflow:
+  workspace: mhadi-ahmed
+  project: car-accident-opikb
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/mhadi-ahmed/car-accident-opikb/dataset/1
