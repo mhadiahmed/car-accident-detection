@@ -40,7 +40,7 @@ def process_image(image_path, uploaded_file=None):
         elif class_name == 'car-moderate-accident':
             accident_type = "Moderate accident detected. calling ambulance and police..."
         elif class_name == 'car-minor-accident':
-            accident_type = "Minor accident detected. calling police only..."
+            accident_type = "Minor accident detected. calling police ..."
     
     processed_image_path = os.path.join(settings.MEDIA_ROOT, 'processed_images', 'result.jpg')
     cv2.imwrite(processed_image_path, img)
