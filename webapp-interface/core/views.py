@@ -26,12 +26,21 @@ def detect_accidents(image, confidence_threshold=0.5):
 def process_image(image_path, uploaded_file=None):
     img = cv2.imread(image_path)
     detected_accidents = detect_accidents(Image.open(image_path))
+    accident_type = None
     for detection in detected_accidents:
         x, y, w, h = detection['bbox']
         cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
         class_id = detection['class_id']
         class_name = class_names[class_id]
         cv2.putText(img, class_name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        
+        # Determine accident type
+        if class_name == 'car-serious-accident':
+            accident_type = "Serious accident detected. calling fire department, ambulance, and police...."
+        elif class_name == 'car-moderate-accident':
+            accident_type = "Moderate accident detected. calling ambulance and police..."
+        elif class_name == 'car-minor-accident':
+            accident_type = "Minor accident detected. calling police only..."
     
     processed_image_path = os.path.join(settings.MEDIA_ROOT, 'processed_images', 'result.jpg')
     cv2.imwrite(processed_image_path, img)
@@ -40,10 +49,12 @@ def process_image(image_path, uploaded_file=None):
         # Save processed image to the database
         processed_image = ProcessedImage.objects.create(
             image='processed_images/result.jpg',
-            uploaded_file=uploaded_file
+            uploaded_file=uploaded_file,
+            accident_type=accident_type  # Save accident type to the database
         )
-        return processed_image
-    return 'processed_images/result.jpg'
+        return processed_image, accident_type
+    return processed_image_path, accident_type
+
 
 def generate_frames(video_path):
     cap = cv2.VideoCapture(video_path)
@@ -84,11 +95,11 @@ def upload_file(request):
             file_extension = Path(file_path).suffix.lower()
 
             if file_extension in ['.jpg', '.jpeg', '.png']:
-                # Process image and save to database
-                processed_image = process_image(file_path, uploaded_file)
+                # Process image and get processed image and accident type
+                processed_image, accident_type = process_image(file_path, uploaded_file)
                 # Use the URL from the database
                 result_image_url = processed_image.image.url if isinstance(processed_image, ProcessedImage) else os.path.relpath(processed_image, settings.MEDIA_ROOT)
-                return render(request, 'result.html', {'result_image_url': result_image_url})
+                return render(request, 'result.html', {'result_image_url': result_image_url, 'accident_type': accident_type})
             elif file_extension in ['.mp4', '.mov', '.avi']:
                 # Save the video path to session
                 request.session['video_path'] = file_path
@@ -98,6 +109,7 @@ def upload_file(request):
     else:
         form = UploadFileForm()
     return render(request, 'upload.html', {'form': form})
+
 
 def stream_video(request):
     video_path = request.session.get('video_path')
